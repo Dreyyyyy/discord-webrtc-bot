@@ -37,7 +37,7 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 2. OBS → Settings → Stream → Custom / WHIP (per LiveKit encoder docs) → paste URL/key.
 3. Start streaming; open LiveKit’s sample meet app or a minimal HTML page with `livekit-client` using a token I mint (dashboard or a one-off script you write yourself).
 
-## Phase 3 — Watch page (in progress)
+## Phase 3 — Watch page (done)
 
 **Goal:** `https://your-host/...#token=...` → click Join → video.
 
@@ -48,7 +48,7 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 
 
 
-## Phase 4 — Discord bot
+## Phase 4 — Discord bot (in progress)
 
 **Goal:** `/stream start` and `/stream stop` without OBS automation.
 
