@@ -1,5 +1,9 @@
 import { fetchLiveKitUrl } from './api/publicConfig.js';
-import { getViewerTokenFromLocation } from './url/viewerToken.js';
+import { fetchViewerToken } from './api/viewerToken.js';
+import {
+  getRoomFromLocation,
+  getViewerTokenFromLocation,
+} from './url/viewerToken.js';
 import { createStatusView } from './ui/statusView.js';
 import { createStreamControls } from './ui/streamControls.js';
 import { createStreamViewer } from './livekit/StreamViewer.js';
@@ -13,6 +17,7 @@ const videoElement = document.getElementById('video');
 
 let livekitUrl = null;
 let viewer = null;
+let roomName = null;
 
 async function ensureViewer() {
   if (!viewer) {
@@ -25,12 +30,18 @@ async function ensureViewer() {
   return viewer;
 }
 
-async function handleJoin() {
-  const token = getViewerTokenFromLocation();
-  if (!token) {
-    status.set('Missing #token= in the link.', 'error');
-    return;
+async function resolveViewerToken() {
+  const tokenFromHash = getViewerTokenFromLocation();
+  if (tokenFromHash) {
+    return tokenFromHash;
   }
+  if (roomName) {
+    return fetchViewerToken(roomName);
+  }
+  return null;
+}
+
+async function handleJoin() {
   if (!livekitUrl) {
     status.set('Server config not loaded.', 'error');
     return;
@@ -40,6 +51,13 @@ async function handleJoin() {
   status.set('Connecting…');
 
   try {
+    const token = await resolveViewerToken();
+    if (!token) {
+      status.set('Missing #room= or #token= in the link.', 'error');
+      controls.setIdle();
+      return;
+    }
+
     const session = await ensureViewer();
     await session.connect(livekitUrl, token);
     controls.setWatching();
@@ -60,10 +78,12 @@ async function handleLeave() {
 async function bootstrap() {
   controls.setLeaveEnabled(false);
 
-  const token = getViewerTokenFromLocation();
-  if (!token) {
+  roomName = getRoomFromLocation();
+  const tokenFromHash = getViewerTokenFromLocation();
+
+  if (!roomName && !tokenFromHash) {
     status.set(
-      'Open a link with #token=… (from /stream start or lk token create).',
+      'Open the watch link from Discord (#room=…) or a manual #token= link.',
       'error',
     );
     controls.setJoinEnabled(false);

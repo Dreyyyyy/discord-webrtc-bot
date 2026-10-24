@@ -2,10 +2,12 @@
     "name": "discord-webrtc-bot",
     "type": "module",
     "scripts": {
-      "start": "node index.js"
+        "start": "node index.js"
     },
     "dependencies": {
-      "dotenv": "^16.4.7",
-      "express": "^4.21.2"
+        "discord.js": "^14.27.0",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "livekit-server-sdk": "^2.19.2"
     }
-  }
+}

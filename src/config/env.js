@@ -21,6 +21,39 @@ export function getLiveKitUrl() {
   return process.env.LIVEKIT_URL ?? '';
 }
 
+export function getLiveKitHttpHost() {
+  const url = getLiveKitUrl();
+  if (!url) return '';
+  return url.replace(/^wss:/, 'https:').replace(/^ws:/, 'http:');
+}
+
+export function getLiveKitApiKey() {
+  return process.env.LIVEKIT_API_KEY ?? '';
+}
+
+export function getLiveKitApiSecret() {
+  return process.env.LIVEKIT_API_SECRET ?? '';
+}
+
 export function getPublicWatchUrl() {
-  return process.env.PUBLIC_WATCH_URL ?? '';
+  const base = process.env.PUBLIC_WATCH_URL ?? '';
+  return base.replace(/\/$/, '');
+}
+
+export function getMaxViewers() {
+  const n = Number(process.env.MAX_VIEWERS);
+  return Number.isFinite(n) && n > 0 ? n : 8;
+}
+
+export function getDiscordToken() {
+  return process.env.DISCORD_TOKEN ?? '';
+}
+
+export function getDiscordAppId() {
+  return process.env.DISCORD_APP_ID ?? process.env.DISCORD_CLIENT_ID ?? '';
+}
+
+/** Optional: register slash commands to one guild for faster dev iteration */
+export function getDiscordGuildId() {
+  return process.env.DISCORD_GUILD_ID ?? '';
 }
