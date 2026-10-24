@@ -1,0 +1,87 @@
+import { fetchLiveKitUrl } from './api/publicConfig.js';
+import { getViewerTokenFromLocation } from './url/viewerToken.js';
+import { createStatusView } from './ui/statusView.js';
+import { createStreamControls } from './ui/streamControls.js';
+import { createStreamViewer } from './livekit/StreamViewer.js';
+
+const status = createStatusView(document.getElementById('status'));
+const controls = createStreamControls({
+  joinButton: document.getElementById('join-button'),
+  leaveButton: document.getElementById('leave-button'),
+});
+const videoElement = document.getElementById('video');
+
+let livekitUrl = null;
+let viewer = null;
+
+async function ensureViewer() {
+  if (!viewer) {
+    viewer = await createStreamViewer({
+      videoElement,
+      onStatus: (message, tone) => status.set(message, tone),
+      onDisconnected: () => controls.setIdle(),
+    });
+  }
+  return viewer;
+}
+
+async function handleJoin() {
+  const token = getViewerTokenFromLocation();
+  if (!token) {
+    status.set('Missing #token= in the link.', 'error');
+    return;
+  }
+  if (!livekitUrl) {
+    status.set('Server config not loaded.', 'error');
+    return;
+  }
+
+  controls.setConnecting();
+  status.set('Connecting…');
+
+  try {
+    const session = await ensureViewer();
+    await session.connect(livekitUrl, token);
+    controls.setWatching();
+  } catch (err) {
+    console.error(err);
+    status.set(err.message || 'Could not connect', 'error');
+    controls.setIdle();
+  }
+}
+
+async function handleLeave() {
+  if (viewer) {
+    await viewer.disconnect();
+  }
+  controls.setIdle();
+}
+
+async function bootstrap() {
+  controls.setLeaveEnabled(false);
+
+  const token = getViewerTokenFromLocation();
+  if (!token) {
+    status.set(
+      'Open a link with #token=… (from /stream start or lk token create).',
+      'error',
+    );
+    controls.setJoinEnabled(false);
+    return;
+  }
+
+  try {
+    livekitUrl = await fetchLiveKitUrl();
+    status.set('Ready — click Join.');
+    controls.setJoinEnabled(true);
+  } catch (err) {
+    console.error(err);
+    status.set(err.message || 'Setup failed', 'error');
+    controls.setJoinEnabled(false);
+  }
+}
+
+document.getElementById('join-button').addEventListener('click', handleJoin);
+document.getElementById('leave-button').addEventListener('click', handleLeave);
+
+bootstrap();

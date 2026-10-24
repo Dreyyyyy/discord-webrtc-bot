@@ -1,3 +1,4 @@
 .env
 ingress.json
 ingress-rtmp.json
+node_modules

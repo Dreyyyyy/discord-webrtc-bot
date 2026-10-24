@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch stream</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>Watch stream</h1>
+        <p>Game video plays here — stay in Discord for voice.</p>
+    </header>
+
+    <main class="main">
+        <section class="panel" aria-live="polite">
+            <p id="status">Loading…</p>
+            <div class="actions">
+                <button type="button" id="join-button" class="btn btn-primary" disabled>Join</button>
+                <button type="button" id="leave-button" class="btn btn-danger" disabled>Leave</button>
+            </div>
+        </section>
+
+        <div class="video-wrap">
+            <video id="video" autoplay playsinline controls title="Stream"></video>
+        </div>
+
+        <p class="footer-hint">Powered by your private stream — not embedded in Discord.</p>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
