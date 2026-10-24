@@ -7,6 +7,8 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 - Each install is one operator, one friend group, private rooms, a hard cap on viewers.
 - No Discord Activities, no video embedded in the Discord client, and no work aimed at hiding the bot from Discord’s enforcement.
 
+*This project will be done using LLMs on most part, and when I use it, It will be denoted on the commit.*
+
 
 
 ## Phase 0 — Accounts (done)
