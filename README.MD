@@ -48,29 +48,24 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 
 
 
-## Phase 4 — Discord bot (in progress)
+## Phase 4 — Discord bot (done)
 
-**Goal:** `/stream start` and `/stream stop` without OBS automation.
+- `/stream start` — LiveKit room + RTMP ingress, ephemeral OBS URL/key, channel link `#room=…`
+- `/stream stop` — delete ingress and room
+- Watch page mints per-viewer tokens via `GET /api/viewer-token?room=…`
 
-Learn in order:
-
-- **discord.js** — register slash commands, `interaction.reply` ephemeral vs channel message.
-- **livekit-server-sdk** — `RoomServiceClient`, `IngressClient` (or REST): create room, create WHIP ingress, delete on stop.
-- **JWT** — subscribe-only token for viewers (`VideoGrant` `canSubscribe`, not publish).
-
-`/stream start` flow I implement:
-
-1. Create room + ingress → ephemeral reply with WHIP server + stream key for the streamer.
-2. Channel message: `PUBLIC_WATCH_URL` + `'#'` + token (or my chosen fragment format).
-3. Store `roomName` / `ingressId` in memory (or a JSON file) for `/stream stop`.
-4. `/stream stop`: delete ingress, delete room, clear state.
+Run locally: copy `.env.example` → `.env`, then `npm start`.
 
 
 
 ## Phase 5 — Deploy on Bot-Hosting
 
-- One Node deployment: `index.js` starts the Discord client + `express.static('web')`.
-- Env vars in the panel: `DISCORD_TOKEN`, `LIVEKIT_*`, `PUBLIC_WATCH_URL` = your `*.apps.bot-hosting.cloud` URL.
-- Deploy from GitHub; set the start command to `node index.js` (or whatever you use).
-- Re-register slash commands if I used a guild ID for dev (global vs guild commands).
+Step-by-step: **[docs/bot-hosting.md](docs/bot-hosting.md)**
+
+Summary:
+
+1. GitHub → Bot-Hosting → **Node.js** deployment, start command **`npm start`**.
+2. Set env vars (`DISCORD_*`, `LIVEKIT_*`, `MAX_VIEWERS`).
+3. After first deploy, set **`PUBLIC_WATCH_URL`** to your `https://….apps.bot-hosting.cloud` URL and restart.
+4. Renew the free deployment every **4 days** in the panel.
 
