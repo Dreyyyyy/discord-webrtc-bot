@@ -58,7 +58,7 @@ Run locally: copy `.env.example` → `.env`, then `npm start`.
 
 
 
-## Phase 5 — Deploy on Bot-Hosting
+## Phase 5 — Deploy on Bot-Hosting (Done)
 
 Step-by-step: **[docs/bot-hosting.md](docs/bot-hosting.md)**
 
@@ -68,4 +68,9 @@ Summary:
 2. Set env vars (`DISCORD_*`, `LIVEKIT_*`, `MAX_VIEWERS`).
 3. After first deploy, set **`PUBLIC_WATCH_URL`** to your `https://….apps.bot-hosting.cloud` URL and restart.
 4. Renew the free deployment every **4 days** in the panel.
+
+## Things that can be improved/keep in mind
+- Currently im using [livekit cloud](https://cloud.livekit.io/) for the webrtc part, and [bot-hosting](https://bot-hosting.net/) for hosting the frontend/backend, I didnt test any othe infras but its possible to do that with some changes;
+- Need to add other resolutions support, as it is hardcoded to 720p 30 fps at the moment;
+- Need to translate it to PT-BR;
 
