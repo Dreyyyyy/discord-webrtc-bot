@@ -27,7 +27,7 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 
 
 
-## Phase 2 — LiveKit proof (in progress)
+## Phase 2 — LiveKit proof (done)
 
 **Goal:** Same OBS scene → WHIP → watch in a browser on phone 4G.
 
@@ -35,9 +35,7 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 2. OBS → Settings → Stream → Custom / WHIP (per LiveKit encoder docs) → paste URL/key.
 3. Start streaming; open LiveKit’s sample meet app or a minimal HTML page with `livekit-client` using a token I mint (dashboard or a one-off script you write yourself).
 
-
-
-## Phase 3 — Watch page
+## Phase 3 — Watch page (in progress)
 
 **Goal:** `https://your-host/...#token=...` → click Join → video.
 
