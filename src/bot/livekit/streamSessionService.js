@@ -4,6 +4,7 @@ import { createIngressClient, createRoomServiceClient } from './clients.js';
 import {
   clearSession,
   getSessionByGuild,
+  getSessionByRoom,
   setSession,
 } from '../state/sessionStore.js';
 
@@ -45,6 +46,7 @@ export async function startStreamSession({ guildId, channelId }) {
     channelId,
     roomName,
     ingressId: ingress.ingressId,
+    createdAt: Date.now(),
   };
 
   setSession(session);
@@ -56,26 +58,51 @@ export async function startStreamSession({ guildId, channelId }) {
   };
 }
 
+export async function deleteLiveKitResources({ ingressId, roomName }) {
+  const ingressClient = createIngressClient();
+  const roomClient = createRoomServiceClient();
+
+  if (ingressId) {
+    try {
+      await ingressClient.deleteIngress(ingressId);
+    } catch (err) {
+      console.warn('deleteIngress:', err.message);
+    }
+  }
+
+  if (roomName) {
+    try {
+      await roomClient.deleteRoom(roomName);
+    } catch (err) {
+      console.warn('deleteRoom:', err.message);
+    }
+  }
+}
+
+export async function teardownStreamResources({ ingressId, roomName, guildId }) {
+  const session =
+    (guildId && getSessionByGuild(guildId)) ||
+    (roomName && getSessionByRoom(roomName)) ||
+    null;
+
+  if (session) {
+    clearSession(session.guildId);
+  }
+
+  await deleteLiveKitResources({
+    ingressId: ingressId ?? session?.ingressId,
+    roomName: roomName ?? session?.roomName,
+  });
+
+  return session;
+}
+
 export async function stopStreamSession(guildId) {
-  const session = clearSession(guildId);
+  const session = getSessionByGuild(guildId);
   if (!session) {
     throw new Error('No active stream in this server.');
   }
 
-  const ingressClient = createIngressClient();
-  const roomClient = createRoomServiceClient();
-
-  try {
-    await ingressClient.deleteIngress(session.ingressId);
-  } catch (err) {
-    console.warn('deleteIngress:', err.message);
-  }
-
-  try {
-    await roomClient.deleteRoom(session.roomName);
-  } catch (err) {
-    console.warn('deleteRoom:', err.message);
-  }
-
+  await teardownStreamResources(session);
   return session;
 }

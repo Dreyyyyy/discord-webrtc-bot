@@ -1,6 +1,7 @@
 import { loadEnv, getPort, getPublicWatchUrl } from '../config/env.js';
 import { createApp } from '../http/createApp.js';
 import { startBot } from '../bot/startBot.js';
+import { startIngressIdleWatch } from '../bot/livekit/ingressIdleWatch.js';
 
 export async function startServer() {
   loadEnv();
@@ -18,7 +19,8 @@ export async function startServer() {
     }
   });
 
-  await startBot();
+  const discordClient = await startBot();
+  startIngressIdleWatch({ discordClient });
 
   return app;
 }

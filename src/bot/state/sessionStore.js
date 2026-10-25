@@ -1,4 +1,12 @@
-/** @typedef {{ roomName: string, ingressId: string, guildId: string, channelId: string }} StreamSession */
+/**
+ * @typedef {{
+ *   roomName: string,
+ *   ingressId: string,
+ *   guildId: string,
+ *   channelId: string,
+ *   createdAt: number,
+ * }} StreamSession
+ */
 
 const byGuildId = new Map();
 const byRoomName = new Map();
@@ -9,6 +17,10 @@ export function getSessionByGuild(guildId) {
 
 export function getSessionByRoom(roomName) {
   return byRoomName.get(roomName) ?? null;
+}
+
+export function listSessions() {
+  return [...byGuildId.values()];
 }
 
 export function setSession(session) {

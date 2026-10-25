@@ -57,3 +57,9 @@ export function getDiscordAppId() {
 export function getDiscordGuildId() {
   return process.env.DISCORD_GUILD_ID ?? '';
 }
+
+/** Minutes without an OBS publish before ingress and room are removed. */
+export function getStreamIdleMinutes() {
+  const n = Number(process.env.STREAM_IDLE_MINUTES);
+  return Number.isFinite(n) && n > 0 ? n : 30;
+}

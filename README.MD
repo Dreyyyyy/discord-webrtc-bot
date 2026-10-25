@@ -9,15 +9,11 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 
 *This project will be done using LLMs on most part, and when I use it, It will be denoted on the commit.*
 
-
-
 ## Phase 0 — Accounts (done)
 
 - **LiveKit Cloud** — [livekit.io](https://livekit.io) → Build (free), create a project, save `LIVEKIT_URL`, API key, and secret. Read their Ingress + WHIP docs once so I can know what the bot will call later.
 - **Discord** — Discord Developer Portal → New application → Bot → token; enable Message Content (slash commands usually don’t). Invite the bot with the `applications.commands` scope.
 - **Bot-Hosting** — [bot-hosting.net](https://bot-hosting.net) account; note 4-day renewal on the free tier.
-
-
 
 ## Phase 1 — Capture proof (done)
 
@@ -26,8 +22,6 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 1. Install OBS + Linux plugins (`vkcapture`, PipeWire app audio) or Windows Game Capture + app audio.
 2. Build one scene, **Record** (not stream) for 2–3 minutes while in a game.
 3. Play the file: correct window, correct audio, no friends’ voices from Discord.
-
-
 
 ## Phase 2 — LiveKit proof (done)
 
@@ -46,17 +40,13 @@ ANPD’s [order](https://www.gov.br/anpd/pt-br/assuntos/noticias/em-medida-preve
 - `Room.connect(LIVEKIT_URL, token)` and attach the remote video track to a `<video>` element.
 - Run locally with Node + Express serving `web/` until it works against my Cloud project.
 
-
-
 ## Phase 4 — Discord bot (done)
 
 - `/stream start` — LiveKit room + RTMP ingress, ephemeral OBS URL/key, channel link `#room=…`
-- `/stream stop` — delete ingress and room
+- `/stream stop` — delete ingress and room. If OBS stays disconnected for `STREAM_IDLE_MINUTES` (default 30), the bot does the same cleanup automatically.
 - Watch page mints per-viewer tokens via `GET /api/viewer-token?room=…`
 
 Run locally: copy `.env.example` → `.env`, then `npm start`.
-
-
 
 ## Phase 5 — Deploy on Bot-Hosting (Done)
 
@@ -64,13 +54,16 @@ Step-by-step: **[docs/bot-hosting.md](docs/bot-hosting.md)**
 
 Summary:
 
-1. GitHub → Bot-Hosting → **Node.js** deployment, start command **`npm start`**.
+1. GitHub → Bot-Hosting → **Node.js** deployment, start command `**npm start`**.
 2. Set env vars (`DISCORD_*`, `LIVEKIT_*`, `MAX_VIEWERS`).
-3. After first deploy, set **`PUBLIC_WATCH_URL`** to your `https://….apps.bot-hosting.cloud` URL and restart.
+3. After first deploy, set `**PUBLIC_WATCH_URL**` to your `https://….apps.bot-hosting.cloud` URL and restart.
 4. Renew the free deployment every **4 days** in the panel.
 
 ## Things that can be improved/keep in mind
-- Currently im using [livekit cloud](https://cloud.livekit.io/) for the webrtc part, and [bot-hosting](https://bot-hosting.net/) for hosting the frontend/backend, I didnt test any othe infras but its possible to do that with some changes;
-- Need to add other resolutions support, as it is hardcoded to 720p 30 fps at the moment;
-- Need to translate it to PT-BR;
+
+- [] Currently im using [livekit cloud](https://cloud.livekit.io/) for the webrtc part, and [bot-hosting](https://bot-hosting.net/) for hosting the frontend/backend, I didnt test any other infras but its possible to do that with some changes;
+- [] Need to add other resolutions support, as it is hardcoded to 720p 30 fps at the moment;
+- [] Need to translate it to PT-BR;
+- [] Add an auto removal livekit ingress time (currently just remove it by /stream stop on discord);
+- [] Add a way to see which users are seeing your live;
 
